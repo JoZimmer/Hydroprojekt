@@ -15,15 +15,15 @@ srcDir_list = ['step1\\refinement0\\E_PROFIL\\',
 
 variables_avail = ['AU', 'Iv']
 
-variable =       variables_avail[1]
+variable =       variables_avail[0]
 points_to_plot = ['city']#, 'rails', 'city']
-steps_to_plot =  ['s1']#, 's2', 's3']
-refinements_to_plot = ['r0', 'r1', 'r2']
+steps_to_plot =  ['s1', 's2', 's3']
+refinements_to_plot = ['r2']#, 'r1', 'r2']
 inlet_condition = ['e']#, 'u']
 
 Din = True
 
-def get_values_to_plot(point_list ,step_list, refinement_list, inlet_condition_list, srcDir_list):
+def get_data_to_plot(point_list ,step_list, refinement_list, inlet_condition_list, srcDir_list):
     '''
     returns absolute path of all files related to the parameters set --> next function to plot the content
 
@@ -42,18 +42,30 @@ def get_values_to_plot(point_list ,step_list, refinement_list, inlet_condition_l
                     for ref in refinement_list:
                         if ref[1] == src[16]:
                             for inlet in inlet_condition_list:
-                                if ref == 'r0' and inlet.upper() == src[18]:
-                                    for point in point_list:
-                                        srcDir_selected.append(rootDir + src + 
-                                            step + '_' + ref + '_' +inlet + '_' + point + '.csv')
-                                elif ref in ['r1' , 'r2']:
-                                    for point in point_list:
-                                        srcDir_selected.append(rootDir + src + 
-                                            step + '_' + ref + '_' +inlet + '_' + point + '.csv')
+                                if inlet == 'e':
+                                    if ref == 'r0' and inlet.upper() == src[18]:
+                                        for point in point_list:
+                                            srcDir_selected.append(rootDir + src + 
+                                                step + '_' + ref + '_' +inlet + '_' + point + '.csv')
+                                    elif ref in ['r1' , 'r2']:
+                                        for point in point_list:
+                                            srcDir_selected.append(rootDir + src + 
+                                                step + '_' + ref + '_' +inlet + '_' + point + '.csv')
+                                elif inlet == 'u':# needed since u profile only in refinement 0
+                                    if ref in ['r1' , 'r2']:
+                                        ref = 'r0' 
+                                        src = srcDir_list[1] 
+                                        for point in point_list:
+                                            srcDir_selected.append(rootDir + src + 
+                                                step + '_' + ref + '_' +inlet + '_' + point + '.csv')
                 elif step == 's2':
-                    for point in point_list:
-                        srcDir_selected.append(rootDir + src + 
-                            step + '_r2' + '_e' + '_' + point + '.csv')
+                    for inlet in inlet_condition_list:
+                        if inlet == 'e':
+                            for point in point_list:
+                                srcDir_selected.append(rootDir + src + 
+                                    step + '_r2' + '_e' + '_' + point + '.csv')
+                        else:
+                            continue #no inlet u in step 2
                 
                 elif step == 's3':
                     for inlet in inlet_condition_list:
@@ -82,10 +94,11 @@ def plot_profiles(variable, points, steps, refinements, inlet, Din = True):
         v_z_III,Iv_z_III, z_din_III = Wind_Profiles.plot_DIN(vb, 'III')
         v_z_IV,Iv_z_IV, z_din_IV = Wind_Profiles.plot_DIN(vb, 'IV')
 
-    selected_data = get_values_to_plot(points_to_plot, steps_to_plot, 
+    selected_data = get_data_to_plot(points_to_plot, steps_to_plot, 
                     refinements_to_plot, inlet_condition, srcDir_list)
 
-    print ('selected data', selected_data)
+    print ('selected data')
+    for i in selected_data: print (i)
     print()
 
     fig = plt.figure('linePlot '+ variable, figsize = (5.4,5))
