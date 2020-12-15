@@ -60,7 +60,7 @@ def sort_Id_vertical(vertices, xDimPatch, xDim, yDim):
         end = (yDim-1)*xDimPatch + startIds[-1]+ xDimPatch +1
         currentIds = list(range(start, end))
         startIds.extend(currentIds) 
-    startIds.pop(0) #dont have to do a switch in teh last column
+    startIds.pop(0) #dont have to do a switch in the last column
     # vector with endIDs of each column
     endIds = list(range(xDimPatch*(yDim-1), xDimPatch*(yDim-1)+ xDimPatch))
     for i in range(1,numberOfStripes):

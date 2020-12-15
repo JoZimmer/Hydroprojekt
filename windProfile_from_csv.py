@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import Wind_Profiles
+import DIN_wind_profiles
 import pandas as pd
 
 rootDir = 'C:\\Users\\Johannes\\LRZ Sync+Share\\Hydroprojekt\\Simulations\\'
@@ -8,7 +8,8 @@ srcFile = rootDir + 'tests_center\\testProfil.csv'
 srcDir_list = ['step1\\refinement0\\E_PROFIL\\', 
                'step1\\refinement0\\UNIFORM\\', 
                'step1\\refinement1\\',
-               'step1\\refinement2\\', 
+               'step1\\refinement2\\',
+               #'step1\\', 
                'step2\\', 
                'step3\\E_PROFIL\\', 
                'step3\\UNIFORM\\']
@@ -16,9 +17,9 @@ srcDir_list = ['step1\\refinement0\\E_PROFIL\\',
 variables_avail = ['AU', 'Iv']
 
 variable =       variables_avail[0]
-points_to_plot = ['city']#, 'rails', 'city']
-steps_to_plot =  ['s1', 's2', 's3']
-refinements_to_plot = ['r2']#, 'r1', 'r2']
+points_to_plot = ['FK']#, 'rails', 'city']
+steps_to_plot =  ['s1']# 's3']#, 's3']
+refinements_to_plot = ['r0', 'r1', 'r2']
 inlet_condition = ['e']#, 'u']
 
 Din = True
@@ -51,6 +52,11 @@ def get_data_to_plot(point_list ,step_list, refinement_list, inlet_condition_lis
                                         for point in point_list:
                                             srcDir_selected.append(rootDir + src + 
                                                 step + '_' + ref + '_' +inlet + '_' + point + '.csv')
+                                elif inlet == 'u' and ref == 'r0':
+                                    if inlet.upper() == src[18]:
+                                        for point in point_list:
+                                                srcDir_selected.append(rootDir + src + 
+                                                    step + '_' + ref + '_' +inlet + '_' + point + '.csv')
                                 elif inlet == 'u':# needed since u profile only in refinement 0
                                     if ref in ['r1' , 'r2']:
                                         ref = 'r0' 
@@ -89,10 +95,10 @@ def plot_profiles(variable, points, steps, refinements, inlet, Din = True):
     # DIN values 
     vb = 28
     if Din:
-        v_z_I,Iv_zI, z_din_I = Wind_Profiles.plot_DIN(vb, 'I')
-        v_z_II,Iv_z_II, z_din_II = Wind_Profiles.plot_DIN(vb, 'II')
-        v_z_III,Iv_z_III, z_din_III = Wind_Profiles.plot_DIN(vb, 'III')
-        v_z_IV,Iv_z_IV, z_din_IV = Wind_Profiles.plot_DIN(vb, 'IV')
+        v_z_I,Iv_zI, z_din_I = DIN_wind_profiles.plot_DIN(vb, 'I')
+        v_z_II,Iv_z_II, z_din_II = DIN_wind_profiles.plot_DIN(vb, 'II')
+        v_z_III,Iv_z_III, z_din_III = DIN_wind_profiles.plot_DIN(vb, 'III')
+        v_z_IV,Iv_z_IV, z_din_IV = DIN_wind_profiles.plot_DIN(vb, 'IV')
 
     selected_data = get_data_to_plot(points_to_plot, steps_to_plot, 
                     refinements_to_plot, inlet_condition, srcDir_list)
@@ -116,13 +122,15 @@ def plot_profiles(variable, points, steps, refinements, inlet, Din = True):
     # ========= DIN ===========
     if Din:
         if variable == 'AU':
-            ax.plot(v_z_IV, z_din_IV+z[0], label = 'DIN - category IV', linestyle = '--')
+            unit = '[m/s]'
+            ax.plot(v_z_IV, z_din_IV+z[0], label = 'DIN - category IV', color = 'red', linestyle = '--')
         # TURBULENCE
         elif variable == 'Iv':
-            ax.plot(Iv_z_IV, z_din_IV+z[0], label = 'DIN - category IV', linestyle = '--')
+            unit = '[-]'
+            ax.plot(Iv_z_IV, z_din_IV+z[0], label = 'DIN - category IV', color = 'red', linestyle = '--')
 
     # === plot settings ========
-    ax.set_xlabel(variable + ' [-]')
+    ax.set_xlabel(variable + ' ' + unit)
     ax.set_ylabel('z [m]')
     ax.minorticks_on()
     plt.grid(which = 'major')

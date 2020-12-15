@@ -47,9 +47,9 @@ JMX = JMX - 4
 KMX = KMX - 4
 
 xstart = reader.fh['/GRIDS/GRIDINFO'][0]['X1']
-xend = reader.fh['/GRIDS/GRIDINFO'][0]['X2']
+xend = reader.fh['/GRIDS/GRIDINFO'][47]['X2']
 ystart = reader.fh['/GRIDS/GRIDINFO'][0]['Y1']
-yend = reader.fh['/GRIDS/GRIDINFO'][0]['Y2']
+yend = reader.fh['/GRIDS/GRIDINFO'][47]['Y2']
 zstart = reader.fh['/GRIDS/GRIDINFO'][0]['Z1']
 zend = reader.fh['/GRIDS/GRIDINFO'][0]['Z2']
 print ('xstart: ', xstart)
