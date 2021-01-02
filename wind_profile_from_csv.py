@@ -4,7 +4,7 @@ import DIN_wind_profiles
 import pandas as pd
 
 rootDir = 'C:\\Users\\Johannes\\LRZ Sync+Share\\Hydroprojekt\\Simulations\\'
-srcFile = rootDir + 'tests_center\\testProfil.csv'
+test_src_file = rootDir + 'tests_center\\testProfil.csv'
 srcDir_list = ['step1\\refinement0\\E_PROFIL\\', 
                'step1\\refinement0\\UNIFORM\\', 
                'step1\\refinement1\\',
@@ -14,19 +14,24 @@ srcDir_list = ['step1\\refinement0\\E_PROFIL\\',
                'step3\\E_PROFIL\\', 
                'step3\\UNIFORM\\']
 
-variables_avail = ['AU', 'Iv']
+variables_available = ['AU', 'Iv']
 
-variable =       variables_avail[0]
+# # set the paramters that should be compared in one plot
+
+variable =       variables_available[0]
 points_to_plot = ['FK']#, 'rails', 'city']
 steps_to_plot =  ['s1']# 's3']#, 's3']
 refinements_to_plot = ['r0', 'r1', 'r2']
 inlet_condition = ['e']#, 'u']
 
-Din = True
+Din = True # if the according DIN profile should be in the plot
 
 def get_data_to_plot(point_list ,step_list, refinement_list, inlet_condition_list, srcDir_list):
     '''
     returns absolute path of all files related to the parameters set --> next function to plot the content
+    --> very complicated with my existing folder structure. 
+    Better: just collect all .csv files in one folder
+
 
     naming of .csv files:
         step(s1,s2,s3)_refinement(r0,r1,r2)_inlet(e,u)_point(FK,rails,city)
@@ -93,7 +98,7 @@ def get_label(full_file_path):
 
 def plot_profiles(variable, points, steps, refinements, inlet, Din = True):
     # DIN values 
-    vb = 28
+    vb = 28 # basis wind speed at location Munich from DIN
     if Din:
         v_z_I,Iv_zI, z_din_I = DIN_wind_profiles.plot_DIN(vb, 'I')
         v_z_II,Iv_z_II, z_din_II = DIN_wind_profiles.plot_DIN(vb, 'II')
@@ -122,14 +127,16 @@ def plot_profiles(variable, points, steps, refinements, inlet, Din = True):
     # ========= DIN ===========
     if Din:
         if variable == 'AU':
-            unit = '[m/s]'
             ax.plot(v_z_IV, z_din_IV+z[0], label = 'DIN - category IV', color = 'red', linestyle = '--')
         # TURBULENCE
         elif variable == 'Iv':
-            unit = '[-]'
             ax.plot(Iv_z_IV, z_din_IV+z[0], label = 'DIN - category IV', color = 'red', linestyle = '--')
 
     # === plot settings ========
+    if variable == 'AU':
+        unit = '[m/s]'
+    elif variable == 'Iv':
+        unit = '[-]'
     ax.set_xlabel(variable + ' ' + unit)
     ax.set_ylabel('z [m]')
     ax.minorticks_on()

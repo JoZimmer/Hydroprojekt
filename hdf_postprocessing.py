@@ -1,10 +1,12 @@
-#%% ALL
-
 import h5py as h5
 import numpy as np
 import matplotlib.pyplot as plt
-import Wind_Profiles
+import DIN_wind_profiles
 import pandas as pd
+
+'''
+some examples to test the direct reading from the mglet_fieldgrid hdf file
+'''
 
 rootDir = 'C:\\Users\\Johannes\\Documents\\TUM\\0_MASTER\\4.Master\\Hydroprojekt\\simulations\\'
 sourceFile = rootDir + 'step1\\refinement0\\9000_nt\\mglet_fieldgrid.h5'
@@ -29,12 +31,13 @@ start = 54*cellsX * cellsY + 2 # 2 für ghost layers
 end = start + 51
 
 linePlotValues = fieldValue[gridBox][start:end]
-z = np.arange(0,len(linePlotValues)*10,10) #10 m höhe pro zelle
+z = np.arange(0,len(linePlotValues)*10,10) #10 m height per cell --> 
+# TODO: take this value directly form the h5 file
 
 # # DIN
 category = 'IV'
 vb = 10
-v_z,Iv_z, z_din = Wind_Profiles.plot_DIN(vb, category)
+v_z,Iv_z, z_din = DIN_wind_profiles.plot_DIN(vb, category)
 
 fig = plt.figure('linePlot '+ variable)
 ax = fig.add_subplot(111)

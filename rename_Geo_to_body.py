@@ -1,10 +1,10 @@
 import os
-import shutil
+
+# # the geodata files must be named continously in this manner: body_00.stl,...
 
 rootdir =   'C:\\Users\\Johannes\\Documents\\TUM\\0_MASTER\\4.Master\\Hydroprojekt\\GeoData_Muc\\GeoData_for_Simulation\\0\\'
 sourceDir = 'C:\\Users\\Johannes\\Documents\\TUM\\0_MASTER\\4.Master\\Hydroprojekt\\GeoData_Muc\\GeoData_for_Simulation\\1\\'
 
-#for file in os.walk(rootdir):
 i = 1
 for file in os.listdir(rootdir):  
     if i < 10:
