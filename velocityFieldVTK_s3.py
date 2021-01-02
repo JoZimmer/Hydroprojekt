@@ -1,6 +1,3 @@
-'''
-this is the original file from the MGLET wiki
-'''
 # import all necessary modules
 from mgtools import vtkViewer
 from mgtools import fields
@@ -14,12 +11,13 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
  
  
 # define input/output filenames
-vtkfilename = "porous_rho10.vtk"
-matfilename = "porous_rho10.mat"
+vtkfilename = "velocity_field.vtk"
+matfilename = "velocity_field.mat"
 h5filename = "mglet_fieldgrid.h5"
  
 # sliced grid? (1 for true)
-islice = 1
+# > you do not have a sliced grid - please, set to 0 (!)
+islice = 0
  
 # instantiate reader object with the given HDF5 filename
 reader = MGreadH5(h5filename)
@@ -35,27 +33,38 @@ if islice == 1:
 else:
   ibeg = 0
  
-iend = NGRDSET
- 
-# read IMX etc. of global grid
+iend = NGRDSET # number of grid boxes
+
 IMX = reader.fh['/GRIDS/GRIDINFO'][0]['IMX']
 JMX = reader.fh['/GRIDS/GRIDINFO'][0]['JMX']
 KMX = reader.fh['/GRIDS/GRIDINFO'][0]['KMX']
  
-# exclude ghost-cell layers (2 on each side)
+# > here {xxx,yyy,zzz} are all cells in a spatial direction on a specific LEVEL (!)
+# do not consider ghost cells
+# always 50 cells per box in each direction
 IMX = IMX - 4
 JMX = JMX - 4
 KMX = KMX - 4
+
+# indices of the end points depend on the length of the domain
+xstart = reader.fh['/GRIDS/GRIDINFO'][0]['X1']
+xend = reader.fh['/GRIDS/GRIDINFO'][87]['X2']
+ystart = reader.fh['/GRIDS/GRIDINFO'][0]['Y1']
+yend = reader.fh['/GRIDS/GRIDINFO'][87]['Y2']
+zstart = reader.fh['/GRIDS/GRIDINFO'][0]['Z1']
+zend = reader.fh['/GRIDS/GRIDINFO'][0]['Z2']
+print ('xstart: ', xstart)
+print ('xend: ', xend)
+# xend = 5570.0, 11570.0
+# ystart, yend = 9780.0, 11780.0
+# zstart, zend = 500.0, 1000.0
+# > use {x,y,z}{start,end} to define the extent of your domain covered with grid on this LEVEL (!)
+# (necesary because you not start from x,y,z = 0)
+x = np.linspace(xstart,xend,IMX)
+y = np.linspace(ystart,yend,JMX)
+z = np.linspace(zstart,zend,KMX)
  
-lx = 2.0
-ly = 1.73205080756888
-lz = 1.63299316185545
- 
-x = np.linspace(0,lx,IMX)
-y = np.linspace(0,ly,JMX)
-z = np.linspace(0,lz,KMX)
- 
-# prepare empty fields to fill
+# prepare empty fields to fill (covering whole domain)
 outputU = fields.ScalarField(x=x,y=y,z=z,dtype=np.float64)
 outputV = fields.ScalarField(x=x,y=y,z=z,dtype=np.float64)
 outputW = fields.ScalarField(x=x,y=y,z=z,dtype=np.float64)
@@ -65,7 +74,7 @@ outputOmega = fields.VectorField(x=x,y=y,z=z,dtype=np.float64)
 outputQ = fields.ScalarField(x=x,y=y,z=z,dtype=np.float64)
 outputLambda2 = fields.ScalarField(x=x,y=y,z=z,dtype=np.float64)
  
-# loop over grids (sub-domain).
+# loop over grids (sub-domain). The finest grid at a certain place wins
 for grid in range(ibeg, iend):
     # read field data
     U = reader[grid].read('U')
@@ -95,7 +104,7 @@ for grid in range(ibeg, iend):
     Q.bb = P.bb
     lambda2.bb = P.bb
  
-    # merge the data to the containers
+    # merge the data to the containers (that cover the whole domain)
     outputU.merge(U, strip=1)
     outputV.merge(V, strip=1)
     outputP.merge(P, strip=1)

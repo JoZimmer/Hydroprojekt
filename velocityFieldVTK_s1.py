@@ -46,6 +46,7 @@ IMX = IMX - 4
 JMX = JMX - 4
 KMX = KMX - 4
 
+# indices of the end points depend on the length of the domain
 xstart = reader.fh['/GRIDS/GRIDINFO'][0]['X1']
 xend = reader.fh['/GRIDS/GRIDINFO'][47]['X2']
 ystart = reader.fh['/GRIDS/GRIDINFO'][0]['Y1']
