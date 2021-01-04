@@ -158,7 +158,7 @@ def get_index_table(faceSize):
     indexTableAll[:1000,1000] = np.arange(indexTableAll[-1,-2]+1, indexTableAll[-1,-2]+1001) # right
     indexTableAll[1000, 1000] = indexTableAll[999,-1] +1 # corner
 
-    # introducing the face siz by only keeping the i th and row and column
+    # introducing the face size by only keeping the i th and row and column
     indexTableFaceSize = indexTableAll[0::faceSize]
     indexTableFaceSize = indexTableFaceSize[:, ::faceSize]
 

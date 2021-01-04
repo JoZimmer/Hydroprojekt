@@ -14,14 +14,14 @@ srcDir_list = ['step1\\refinement0\\E_PROFIL\\',
                'step3\\E_PROFIL\\', 
                'step3\\UNIFORM\\']
 
-variables_available = ['AU', 'Iv']
+variables_available = ['AU', 'Iv', 'U_rms']
 
 # # set the paramters that should be compared in one plot
 
-variable =       variables_available[0]
+variable =       variables_available[2]
 points_to_plot = ['FK']#, 'rails', 'city']
-steps_to_plot =  ['s1']# 's3']#, 's3']
-refinements_to_plot = ['r0', 'r1', 'r2']
+steps_to_plot =  ['s1','s2', 's3']
+refinements_to_plot = ['r2']# 'r1', 'r2']
 inlet_condition = ['e']#, 'u']
 
 Din = True # if the according DIN profile should be in the plot
@@ -121,7 +121,12 @@ def plot_profiles(variable, points, steps, refinements, inlet, Din = True):
         except FileNotFoundError:
             print (get_label(raw_data), 'was omitted. Check the naming of your files!')
         z = data['Points:2'] - data['Points:2'][0] # normalize
-        value = data[variable]
+
+        if variable == 'U_rms':
+            value = np.multiply(data['Iv'], abs(data['AU'])) # reverse the computation of Iv
+            Din = False
+        else:
+            value = data[variable]
         ax.plot(value, z, '-',label = get_label(raw_data))        
 
     # ========= DIN ===========
@@ -135,7 +140,7 @@ def plot_profiles(variable, points, steps, refinements, inlet, Din = True):
     # === plot settings ========
     if variable == 'AU':
         unit = '[m/s]'
-    elif variable == 'Iv':
+    elif variable in  ['Iv', 'U_rms']:
         unit = '[-]'
     ax.set_xlabel(variable + ' ' + unit)
     ax.set_ylabel('z [m]')
