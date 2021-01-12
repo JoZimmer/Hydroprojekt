@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 import DIN_wind_profiles
 import pandas as pd
 
+'''
+this folder is rather complicated.
+better make a common folder for the .csv files and name each file uniquely
+'''
+ 
 rootDir = 'C:\\Users\\Johannes\\LRZ Sync+Share\\Hydroprojekt\\Simulations\\'
 test_src_file = rootDir + 'tests_center\\testProfil.csv'
 srcDir_list = ['step1\\refinement0\\E_PROFIL\\', 
@@ -19,10 +24,10 @@ variables_available = ['AU', 'Iv', 'U_rms']
 # # set the paramters that should be compared in one plot
 
 variable =       variables_available[2]
-points_to_plot = ['FK']#, 'rails', 'city']
-steps_to_plot =  ['s1','s2', 's3']
+points_to_plot = ['city']#, 'rails', 'city']
+steps_to_plot =  ['s3']#,'s2', 's3']
 refinements_to_plot = ['r2']# 'r1', 'r2']
-inlet_condition = ['e']#, 'u']
+inlet_condition = ['e', 'u']
 
 Din = True # if the according DIN profile should be in the plot
 
@@ -31,7 +36,6 @@ def get_data_to_plot(point_list ,step_list, refinement_list, inlet_condition_lis
     returns absolute path of all files related to the parameters set --> next function to plot the content
     --> very complicated with my existing folder structure. 
     Better: just collect all .csv files in one folder
-
 
     naming of .csv files:
         step(s1,s2,s3)_refinement(r0,r1,r2)_inlet(e,u)_point(FK,rails,city)

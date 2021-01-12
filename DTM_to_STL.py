@@ -89,7 +89,7 @@ def get_ring_files(fileList, numberOfLayers = 1, coreDim = 3, centre = (691,5334
 '''
 from the list of files the data of the points in the DTM files is read
 a lookup table is created that sorts the given files in to a rectangle according to the dimensons in x and y
-that is coverd by the given files
+that is coverd by the given file
 '''
 
 def read_point_data(files_list):
